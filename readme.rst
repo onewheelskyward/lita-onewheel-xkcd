@@ -3,7 +3,7 @@
 .. image:: https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd.png?branch=master :target: https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd
 .. image:: https://coveralls.io/repos/onewheelskyward/lita-onewheel-xkcd/badge.svg?branch=master&service=github :target: https://coveralls.io/github/onewheelskyward/lita-onewheel-xkcd?branch=master
 
-TODO: Add a description of the plugin.
+A Lita_ handler to display XKCD comics in your chat handler of choice.  
 
 ## Installation
 
@@ -15,8 +15,10 @@ gem "lita-onewheel-xkcd"
 
 ## Configuration
 
-TODO: Describe any configuration attributes the plugin exposes.
+TODO: Add an alt-text delay
 
 ## Usage
 
-TODO: Describe the plugin's features and how to use them.
+TODO: List of commands and the initial population.
+
+.. _Lita: http://lita.io/

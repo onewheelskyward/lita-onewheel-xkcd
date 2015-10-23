@@ -7,9 +7,9 @@ A Lita_ handler to display XKCD comics in your chat handler of choice.
 
 ## Installation
 
-Add lita-onewheel-xkcd to your Lita instance's Gemfile::
+Add lita-onewheel-xkcd to your Lita instance's Gemfile:
+::
   gem "lita-onewheel-xkcd"
-
 
 ## Configuration
 

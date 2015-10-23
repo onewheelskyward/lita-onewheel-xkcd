@@ -1,6 +1,6 @@
 # lita-onewheel-xkcd
 
-[![Build Status](https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd.png?branch=master)](https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd)
+.. image:: https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd.png?branch=master :target: https://travis-ci.org/onewheelskyward/lita-onewheel-xkcd
 .. image:: https://coveralls.io/repos/onewheelskyward/lita-onewheel-xkcd/badge.svg?branch=master&service=github :target: https://coveralls.io/github/onewheelskyward/lita-onewheel-xkcd?branch=master
 
 TODO: Add a description of the plugin.

@@ -14,12 +14,9 @@ top_response = RestClient.get 'http://xkcd.com/info.0.json'
 top_json = JSON.parse top_response
 puts top_json['num']
 
-for num in 1..top_json['num'] do
+for num in 405..top_json['num'] do
   response = RestClient.get "http://xkcd.com/#{num}/info.0.json"
   db_comics.insert(data: response)
   puts "#{num}/#{top_json['num']}"
 end
-response = RestClient.get 'http://xkcd.com/1/info.0.json'
-
-puts response.inspect
 

@@ -1,6 +1,5 @@
 require 'sequel'
 require 'json'
-require 'pry'
 require_relative '../models/comic'
 
 module Lita

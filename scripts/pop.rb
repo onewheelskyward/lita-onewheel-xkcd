@@ -1,18 +1,12 @@
 require 'sequel'
 require 'rest-client'
-require 'pry'
 
-DB = Sequel.connect('postgres://root@localhost:5432/lita_xkcd')
+db = Sequel.connect('postgres://root@localhost:5432/lita_xkcd')
 
-# DB.create_table :comics do
-#   primary_key :id
-#   Json :data
-# end
-
-max_id = DB[:comics].max(:id) || 1
+max_id = db[:comics].max(:id) || 1
 
 puts "max_id: #{max_id}"
-db_comics = DB[:comics]
+db_comics = db[:comics]
 
 top_response = RestClient.get 'http://xkcd.com/info.0.json'
 top_json = JSON.parse top_response

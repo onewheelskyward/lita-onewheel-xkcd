@@ -28,11 +28,12 @@ Unless you're running the defaults, you'll want to specify your database connect
 
 Usage
 -----
-xkcd: Returns a random XKCD comic.
-xkcd 411: Returns xkcd.com/411's comic.
-xkcd ballmer: returns my favorite Steve Ballmer comic.
-xkcd next: returns the next comic by index.
-xkcd prev: returns the previous comic by index.
+
+:xkcd: Returns a random XKCD comic.
+:xkcd 411: Returns xkcd.com/411's comic.
+:xkcd ballmer: returns my favorite Steve Ballmer comic.
+:xkcd next: returns the next comic by index.
+:xkcd prev: returns the previous comic by index.
 
 
 Engineering Notes

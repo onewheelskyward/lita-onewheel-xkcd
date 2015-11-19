@@ -31,7 +31,7 @@ module Lita
             command: true,
             help: {'xkcd prev' => 'return the previous XKCD comic by date.'}
 
-      route /^xkcd prev/i,
+      route /^xkcd next/i,
             :find_next,
             command: true,
             help: {'xkcd prev' => 'return the next XKCD comic by date.'}
@@ -39,8 +39,8 @@ module Lita
       def find_by_keyword(response)
         db = init_db
         keywords = response.matches[0][0]
-        result = db["select
-          id, data->'img' as img, data->'title' as title, data->'alt' as alt
+        result = db["
+          select id, data->'img' as img, data->'title' as title, data->'alt' as alt
           from comics
           where data->>'title' ilike ? order by RANDOM() limit 1", "%#{keywords}%"]
         if row = result[:data]
@@ -52,8 +52,8 @@ module Lita
       def find_by_number(response)
         db = init_db
         number = response.matches[0][0]
-        result = db["select
-          id, data->'img' as img, data->'title' as title, data->'alt' as alt
+        result = db["
+          select id, data->'img' as img, data->'title' as title, data->'alt' as alt
           from comics
           where id = ?", number]
         if row = result[:data]
@@ -64,8 +64,8 @@ module Lita
 
       def random(response)
         db = init_db
-        row = db["select
-          id, data->'img' as img, data->'title' as title, data->'alt' as alt
+        row = db["
+          select id, data->'img' as img, data->'title' as title, data->'alt' as alt
           from comics
           order by RANDOM()
           limit 1"][:data]
@@ -73,12 +73,36 @@ module Lita
         reply_with_comic response, comic
       end
 
+      def find_next(response)
+        db = init_db
+        last_comic = get_last_comic(response.user)
+        last_comic += 1
+        comic = get_comic_by_id(db, last_comic)
+        reply_with_comic response, comic
+      end
+
+      def find_prev(response)
+        db = init_db
+        last_comic = get_last_comic(response.user)
+        last_comic -= 1
+        comic = get_comic_by_id(db, last_comic)
+        reply_with_comic response, comic
+      end
+
+      def get_comic_by_id(db, last_comic)
+        row = db["
+          select id, data->'img' as img, data->'title' as title, data->'alt' as alt
+          from comics
+          where id = ?", last_comic][:data]
+        comic = Comic.new(row[:id], row[:img], row[:title], row[:alt])
+      end
+
       ##
       # Helper function to display comic and set timer for alt tag.
       #
       def reply_with_comic(response, comic)
         set_state comic, response.user
-        response.reply "\"#{comic.title}\" #{comic.image}"
+        response.reply "XKCD #{comic.id} \"#{comic.title}\" #{comic.image}"
         after(9) do |timer|
           response.reply comic.alt
         end
@@ -103,8 +127,8 @@ module Lita
       #
       def get_last_comic(user)
         db = init_db
-        state = db[:state].filter(:user => user.name)
-        state[:last_comic]
+        dataset = db[:state].where(:user => user.name)
+        dataset.first[:last_comic]
       end
 
       def init_db

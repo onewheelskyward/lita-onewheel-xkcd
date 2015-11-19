@@ -24,7 +24,7 @@ module Lita
       route /^xkcd (\d+)/i,
             :find_by_number,
             command: true,
-            help: {'xkcd (keyword)' => 'return an XKCD comic with the keyword(s) specified.'}
+            help: {'xkcd (number)' => 'return an XKCD comic by it\'s number (somewhere between 1 and 1600).'}
 
       route /^xkcd prev/i,
             :find_prev,
@@ -36,6 +36,9 @@ module Lita
             command: true,
             help: {'xkcd prev' => 'return the next XKCD comic by date.'}
 
+      ##
+      # Search the title for a string, and return the comic.
+      #
       def find_by_keyword(response)
         db = init_db
         keywords = response.matches[0][0]
@@ -49,6 +52,9 @@ module Lita
         end
       end
 
+      ##
+      # Find by xkcd id.
+      #
       def find_by_number(response)
         db = init_db
         number = response.matches[0][0]
@@ -62,6 +68,9 @@ module Lita
         end
       end
 
+      ##
+      # Get a random comic
+      #
       def random(response)
         db = init_db
         row = db["
@@ -74,6 +83,9 @@ module Lita
         reply_with_comic response, comic
       end
 
+      ##
+      # Find the next comic based on user state
+      #
       def find_next(response)
         db = init_db
         if last_comic = get_last_comic(response.user)
@@ -83,6 +95,9 @@ module Lita
         end
       end
 
+      ##
+      # Find the previous comic based on user state
+      #
       def find_prev(response)
         db = init_db
         if last_comic = get_last_comic(response.user)
@@ -92,6 +107,9 @@ module Lita
         end
       end
 
+      ##
+      # Grab the comic object by xkcd id (which is also db id)
+      #
       def get_comic_by_id(db, last_comic)
         row = db["
           select id, data->'img' as img, data->'title' as title, data->'alt' as alt

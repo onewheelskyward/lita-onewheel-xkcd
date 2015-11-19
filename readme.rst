@@ -51,4 +51,6 @@ Parser script, import into postgres?  Best way to handle json
 
 Keyword tokenizer, it's substring searching at the moment.
 
+Add postgres setup and details on how to update the database with new comics.
+
 .. _Lita: http://lita.io/

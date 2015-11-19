@@ -16,12 +16,24 @@ Add lita-onewheel-xkcd to your Lita instance's Gemfile:
 
 Configuration
 -------------
-TODO: Add an alt-text delay
+Unless you're running the defaults, you'll want to specify your database connection values like so:
 
+..
+Lita.configure do |config|
+  config.handlers.onewheel_xkcd.db_host = 'localhost'
+  config.handlers.onewheel_xkcd.db_name = 'lita_xkcd'
+  config.handlers.onewheel_xkcd.db_user = 'root'
+  config.handlers.onewheel_xkcd.db_pass = ''
+  config.handlers.onewheel_xkcd.db_port = 5432
+end
 
 Usage
 -----
-TODO: List of commands and the initial population.
+xkcd: Returns a random XKCD comic.
+xkcd 411: Returns xkcd.com/411's comic.
+xkcd ballmer: returns my favorite Steve Ballmer comic.
+xkcd next: returns the next comic by index.
+xkcd prev: returns the previous comic by index.
 
 
 Engineering Notes
@@ -35,6 +47,6 @@ How to map # to date?  - it's in the meta
 
 Parser script, import into postgres?  Best way to handle json
 
-
+Keyword tokenizer, it's substring searching at the moment.
 
 .. _Lita: http://lita.io/

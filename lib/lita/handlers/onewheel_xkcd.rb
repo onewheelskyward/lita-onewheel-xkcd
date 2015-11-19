@@ -10,6 +10,7 @@ module Lita
       config :db_user, required: true, default: 'root'
       config :db_pass, required: true, default: ''
       config :db_port, required: true, default: 5432
+      config :alt_delay, default: 9
 
       route /^xkcd$/i,
             :random,
@@ -125,7 +126,7 @@ module Lita
       def reply_with_comic(response, comic)
         set_state comic, response.user
         response.reply "XKCD #{comic.id} \"#{comic.title}\" #{comic.image}"
-        after(9) do |timer|
+        after(config.alt_delay) do |timer|
           response.reply comic.alt
         end
       end
@@ -139,10 +140,10 @@ module Lita
         user_state = state.where(:user => user.name)
         puts user_state.count
         if user_state.count > 0
-          log.debug "Updating state!"
+          log.debug 'Updating state!'
           user_state.update(:last_comic => comic.id)
         else
-          log.debug "Creating state!"
+          log.debug 'Creating state!'
           state.insert(user: user.name, last_comic: comic.id)
         end
       end

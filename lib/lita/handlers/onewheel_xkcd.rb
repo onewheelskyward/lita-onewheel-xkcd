@@ -68,25 +68,28 @@ module Lita
           select id, data->'img' as img, data->'title' as title, data->'alt' as alt
           from comics
           order by RANDOM()
-          limit 1"][:data]
+          limit 1"
+        ][:data]
         comic = Comic.new(row[:id], row[:img], row[:title], row[:alt])
         reply_with_comic response, comic
       end
 
       def find_next(response)
         db = init_db
-        last_comic = get_last_comic(response.user)
-        last_comic += 1
-        comic = get_comic_by_id(db, last_comic)
-        reply_with_comic response, comic
+        if last_comic = get_last_comic(response.user)
+          last_comic += 1
+          comic = get_comic_by_id(db, last_comic)
+          reply_with_comic response, comic
+        end
       end
 
       def find_prev(response)
         db = init_db
-        last_comic = get_last_comic(response.user)
-        last_comic -= 1
-        comic = get_comic_by_id(db, last_comic)
-        reply_with_comic response, comic
+        if last_comic = get_last_comic(response.user)
+          last_comic -= 1
+          comic = get_comic_by_id(db, last_comic)
+          reply_with_comic response, comic
+        end
       end
 
       def get_comic_by_id(db, last_comic)
@@ -94,7 +97,8 @@ module Lita
           select id, data->'img' as img, data->'title' as title, data->'alt' as alt
           from comics
           where id = ?", last_comic][:data]
-        comic = Comic.new(row[:id], row[:img], row[:title], row[:alt])
+
+        Comic.new(row[:id], row[:img], row[:title], row[:alt])
       end
 
       ##
@@ -115,9 +119,12 @@ module Lita
         db = init_db
         state = db[:state]
         user_state = state.where(:user => user.name)
-        if user_state
+        puts user_state.count
+        if user_state.count > 0
+          log.debug "Updating state!"
           user_state.update(:last_comic => comic.id)
         else
+          log.debug "Creating state!"
           state.insert(user: user.name, last_comic: comic.id)
         end
       end
@@ -128,7 +135,12 @@ module Lita
       def get_last_comic(user)
         db = init_db
         dataset = db[:state].where(:user => user.name)
-        dataset.first[:last_comic]
+        if dataset.count > 0
+          dataset.first[:last_comic]
+        else
+          log.debug("get_last_comic called with no user state for #{user.name}")
+        end
+
       end
 
       def init_db

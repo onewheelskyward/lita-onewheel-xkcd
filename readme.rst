@@ -18,7 +18,7 @@ Configuration
 -------------
 Unless you're running the defaults, you'll want to specify your database connection values like so:
 
-..
+::
 Lita.configure do |config|
   config.handlers.onewheel_xkcd.db_host = 'localhost'
   config.handlers.onewheel_xkcd.db_name = 'lita_xkcd'

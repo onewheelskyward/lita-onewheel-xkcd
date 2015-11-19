@@ -17,7 +17,6 @@ Add lita-onewheel-xkcd to your Lita instance's Gemfile:
 Configuration
 -------------
 Unless you're running the defaults, you'll want to specify your database connection values like so:
-
 ::
   Lita.configure do |config|
     config.handlers.onewheel_xkcd.db_host = 'localhost'

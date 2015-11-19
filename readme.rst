@@ -24,10 +24,12 @@ Unless you're running the defaults, you'll want to specify your database connect
     config.handlers.onewheel_xkcd.db_user = 'root'
     config.handlers.onewheel_xkcd.db_pass = ''
     config.handlers.onewheel_xkcd.db_port = 5432
+    config.handlers.onewheel-xkcd.alt_delay = 15   # Optional; 9 is the default.
   end
 
 Usage
 -----
+All commands return the comic, and then display the alt text alt_delay seconds later.
 
 :xkcd: Returns a random XKCD comic.
 :xkcd 411: Returns xkcd.com/411's comic.

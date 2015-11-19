@@ -2,7 +2,7 @@ require 'sequel'
 
 db = Sequel.connect('postgres://root@localhost:5432/lita_xkcd')
 
-DB.create_table :comics do
+db.create_table :comics do
   primary_key :id
   Json :data
 end

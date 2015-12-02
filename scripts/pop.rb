@@ -22,4 +22,3 @@ for num in max_id..top_json['num'] do
   db_comics.insert(data: response)
   puts "#{num}/#{top_json['num']}"
 end
-

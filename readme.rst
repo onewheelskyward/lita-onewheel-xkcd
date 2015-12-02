@@ -9,6 +9,7 @@ A Lita_ handler to display XKCD comics in your chat handler of choice.
 
 Installation
 ------------
+Get a postgres instance running, give this guy access to write to the two tables in scripts/schema.rb.
 Add lita-onewheel-xkcd to your Lita instance's Gemfile:
 ::
   gem "lita-onewheel-xkcd"
@@ -36,7 +37,7 @@ All commands return the comic, and then display the alt text alt_delay seconds l
 :xkcd ballmer: returns my favorite Steve Ballmer comic.
 :xkcd next: returns the next comic by index.
 :xkcd prev: returns the previous comic by index.
-
+:xkcdupdate: Updates the database with the latest comics.  Manually, for now.
 
 Engineering Notes
 -----------------
@@ -46,8 +47,6 @@ Current comic(including top number): http://xkcd.com/info.0.json
 Comic by number: http://xkcd.com/1/info.0.json
 
 How to map # to date?  - it's in the meta
-
-Parser script, import into postgres?  Best way to handle json
 
 Keyword tokenizer, it's substring searching at the moment.
 

@@ -12,6 +12,11 @@ module Lita
       config :db_port, required: true, default: 5432
       config :alt_delay, default: 9
 
+      route /^xkcdupdate$/,
+            :update,
+            command: true
+            # admin_only
+
       route /^xkcd$/i,
             :random,
             command: true,
@@ -37,6 +42,16 @@ module Lita
             command: true,
             help: {'xkcd prev' => 'return the next XKCD comic by date.'}
 
+      route(/^xkcd (\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})$/i,
+            :find_by_mdy,
+            command: true,
+            help: { 'xkcd 1/1/2014' => 'Get an XKCD comic for a m/d/y date.'})
+
+      route(/^xkcd (\d{2,4})-(\d{1,2})-(\d{1,2})$/i,
+            :find_by_ymd,
+            command: true,
+            help: { 'xkcd 2014-1-1' => 'Get an XKCD comic for a y-m-d date.'})
+
       ##
       # Search the title for a string, and return the comic.
       #
@@ -50,6 +65,20 @@ module Lita
         if row = result[:data]
           comic = Comic.new(row[:id], row[:img], row[:title], row[:alt])
           reply_with_comic response, comic
+        end
+      end
+
+      ##
+      # Search for the date, and return the comic.
+      #
+      def find_by_date(month, day, year)
+        db = init_db
+        result = db["
+          select id, data->'img' as img, data->'title' as title, data->'alt' as alt
+          from comics
+          where data->>'month' = ? and data->>'day' = ? and data->>'year' = ? limit 1", month.to_s, day.to_s, year.to_s]
+        if row = result[:data]
+          Comic.new(row[:id], row[:img], row[:title], row[:alt])
         end
       end
 
@@ -108,6 +137,18 @@ module Lita
         end
       end
 
+      def find_by_ymd(response)
+        date = Date.civil(response.match_data[1].to_i, response.match_data[2].to_i, response.match_data[3].to_i)
+        comic = find_by_date(date.month, date.day, date.year)
+        reply_with_comic response, comic
+      end
+
+      def find_by_mdy(response)
+        date = Date.civil(response.match_data[3].to_i, response.match_data[1].to_i, response.match_data[2].to_i)
+        comic = find_by_date(date.month, date.day, date.year)
+        reply_with_comic response, comic
+      end
+
       ##
       # Grab the comic object by xkcd id (which is also db id)
       #
@@ -124,10 +165,12 @@ module Lita
       # Helper function to display comic and set timer for alt tag.
       #
       def reply_with_comic(response, comic)
-        set_state comic, response.user
-        response.reply "XKCD #{comic.id} \"#{comic.title}\" #{comic.image}"
-        after(config.alt_delay) do |timer|
-          response.reply comic.alt
+        if comic
+          set_state comic, response.user
+          response.reply "XKCD #{comic.id} \"#{comic.title}\" #{comic.image}"
+          after(config.alt_delay) do |timer|
+            response.reply comic.alt
+          end
         end
       end
 
@@ -138,7 +181,6 @@ module Lita
         db = init_db
         state = db[:state]
         user_state = state.where(:user => user.name)
-        puts user_state.count
         if user_state.count > 0
           log.debug 'Updating state!'
           user_state.update(:last_comic => comic.id)
@@ -159,7 +201,33 @@ module Lita
         else
           log.debug("get_last_comic called with no user state for #{user.name}")
         end
+      end
 
+      def update(response)
+        db = init_db
+        # Check tables? run schema?
+        max_id = db[:comics].max(:id) || 1  # Get the last id or start with one.
+        top_num = get_top_num
+        response.reply "Updating from #{max_id} to #{top_num}!"
+        perform_update(max_id + 1, top_num)
+      end
+
+      def get_top_num
+        top_response = RestClient.get 'http://xkcd.com/info.0.json'
+        top_json = JSON.parse top_response
+        top_num = top_json['num']
+        top_json
+      end
+
+      def perform_update(max_id, top_num)
+        for num in max_id..top_num do
+          if num == 404
+            db_comics.insert(data: '{"status":"not found"}')
+            next
+          end
+          response = RestClient.get "http://xkcd.com/#{num}/info.0.json"
+          db_comics.insert(data: response)
+        end
       end
 
       def init_db

@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = 'lita-onewheel-xkcd'
-  spec.version       = '1.0.0'
+  spec.version       = '1.0.1'
   spec.authors       = ['Andrew Kreps']
   spec.email         = ['andrew.kreps@gmail.com']
   spec.description   = 'XKCD searchable archive for comics by keyword, id and date*.  * date coming soon to a minor update near you'
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'lita', '~> 4.6'
+  spec.add_runtime_dependency 'lita', '~> 4'
   spec.add_runtime_dependency 'lita-irc', '~> 2.0'
   spec.add_runtime_dependency 'sequel', '~> 4.27'
   spec.add_runtime_dependency 'sequel_pg', '~> 1.6'
